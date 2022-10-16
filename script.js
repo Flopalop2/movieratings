@@ -1,6 +1,6 @@
 const API_KEY = "65d5ca8e4353e4c1561fc76bf319cfb7";
-var movie1;
-var movie2;
+var movie1 = null;
+var movie2 = null;
 //var randMovie = (Math.random()*99997) + 2;
 
 var movieRatings = {};
@@ -8,7 +8,7 @@ var unwatchedIDs = {};
 
 // get list of movies (preferably done once a day on server but alas)
 var codes = [];
-for (let i = 1; i <= 5; i++) { //temporarily 5, should be 100 but voting would take forever for 1 person
+for (let i = 1; i <= 1; i++) { //temporarily 5, should be 100 but voting would take forever for 1 person
   let page = i;
   let movieListURL = "https://api.themoviedb.org/3/movie/top_rated?api_key="+ API_KEY+ "&language=en-US&page=" + page;
   fetch(movieListURL)
@@ -32,10 +32,21 @@ for (let i = 1; i <= 5; i++) { //temporarily 5, should be 100 but voting would t
 console.log(codes);
 
 function getMovie(num) {
-    let randMovieID
-    do {
-      randMovieID = codes[Math.floor(Math.random()*codes.length)];
-    } while (unwatchedIDs[randMovieID] != null);
+    let randMovieID;
+    let opMovieID = 0; //preventing duplicates... doesnt work on first matchup and infinite loops when out of movies (never happens in practice)
+    if (movie1 != null) {
+      if (num === 1) {
+        opMovieID = movie2.id;
+      }
+      else if (num===2) {
+        opMovieID = movie1.id;
+      }
+    }
+    do { //dont love the use of do whiles nested like this
+      do {
+        randMovieID = codes[Math.floor(Math.random()*codes.length)];
+      } while (unwatchedIDs[randMovieID] != null);
+    } while (randMovieID == opMovieID); //duplicates can still happen when pressing new matchup do to asynchronous behavior of promises. probably switch to await
     
     let movieURL = "https://api.themoviedb.org/3/movie/" + randMovieID + "?api_key="+ API_KEY+ "&language=en-US";
     // call API
