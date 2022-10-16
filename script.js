@@ -8,7 +8,7 @@ var unwatchedIDs = {};
 
 // get list of movies (preferably done once a day on server but alas)
 var codes = [];
-for (let i = 1; i <= 1; i++) { //temporarily 5, should be 100 but voting would take forever for 1 person
+for (let i = 1; i <= 5; i++) { //temporarily 5, should be 100 but voting would take forever for 1 person
   let page = i;
   let movieListURL = "https://api.themoviedb.org/3/movie/top_rated?api_key="+ API_KEY+ "&language=en-US&page=" + page;
   fetch(movieListURL)
